@@ -15,6 +15,7 @@ let numberOfGuessesRemaining = 8;
 const getRandomWord = function () {
 
     word = 'magnolia';
+    word = word.toUpperCase();
     //Display circles corresponding to word letters
     for (let i = 0; i < word.length; i++) {
         wordWithLettersFound = wordWithLettersFound + "●";
@@ -55,27 +56,31 @@ const adjusSettingsForNotFoundLetter = function () {
 
 }
 
-const endGame = function(){
+const endGame = function () {
     guessButton.classList.add('hide');
     playAgainButton.classList.remove('hide');
 }
 
 const checkIfLetterIsInWord = function (letterEntered) {
 
+    let letterFound = false;
 
     if (word.includes(letterEntered)) {
         for (let i = 0; i < word.length; i++) {
             if (word[i] === letterEntered) {
                 if (wordWithLettersFound[i] == "●") {
                     wordWithLettersFound = replaceCircleWithCharacter(wordWithLettersFound, letterEntered, i);
-                    if(!wordWithLettersFound.includes("●")){
+                    if (!wordWithLettersFound.includes("●")) {
                         endGame();
+                        return;
                     }
-                    return;
+                    letterFound = true;
                 }
             }
         }
-        adjusSettingsForNotFoundLetter();
+        if (!letterFound) {
+            adjusSettingsForNotFoundLetter();
+        }
 
     } else {
         adjusSettingsForNotFoundLetter();
@@ -83,14 +88,48 @@ const checkIfLetterIsInWord = function (letterEntered) {
 
 }
 
+const letterAlreadyUsed = function (letterEntered) {
+
+    var items = guessedLettersList.getElementsByTagName("li");
+    for (var i = 0; i < items.length; ++i) {
+        if (items[i].innerText == letterEntered)
+            return true;
+    }
+    return false;
+}
+
+const checkLetter = function (letterEntered) {
+
+    const acceptedLetter = /[a-zA-Z]/;
+    let alertMessage = "";
+
+    if (letterEntered == "") {
+        alertMessage = 'Please enter a letter';
+    } else if (letterEntered.length > 1) {
+        alertMessage = 'Please enter only one letter';
+    } else if (!letterEntered.match(acceptedLetter)) {
+        alertMessage = 'You can only enter characters. No numbers allowed';
+    } else if (letterAlreadyUsed(letterEntered)) {
+        alertMessage = 'Character previously used. GUESS SAVED :)';
+    }
+    else {
+        return true;
+    }
+
+    message.innerText = alertMessage;
+    return false;
+
+}
+
 
 guessButton.addEventListener("click", function (e) {
 
     e.preventDefault();
-    let letterEntered = letterInput.value;
-    if (letterInput.value == "") {
-        alert('Please enter a letter');
-    } else {
+
+    message.innerText = "";
+    let letterEntered = letterInput.value.toUpperCase();
+    let letterAccepted = checkLetter(letterEntered);
+    if (letterAccepted) {
         addLetterToGuessedLettersList(letterEntered);
         checkIfLetterIsInWord(letterEntered);
         displayWordInProgress();
