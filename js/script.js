@@ -12,10 +12,15 @@ let numberOfGuessesRemaining = 8;
 
 
 
-const getRandomWord = function () {
+const getRandomWord = async function () {
 
-    word = 'magnolia';
-    word = word.toUpperCase();
+
+    let request = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
+    let result = await request.text();
+    const wordArray = result.split("\n")
+    let randomIndex = Math.floor(Math.random() * wordArray.length);
+    word = wordArray[randomIndex];
+    word = word.toUpperCase().trim();
     //Display circles corresponding to word letters
     for (let i = 0; i < word.length; i++) {
         wordWithLettersFound = wordWithLettersFound + "●";
@@ -83,6 +88,7 @@ const checkIfLetterIsInWord = function (letterEntered) {
             if (word[i] === letterEntered) {
                 if (wordWithLettersFound[i] == "●") {
                     wordWithLettersFound = replaceCircleWithCharacter(wordWithLettersFound, letterEntered, i);
+                    message.innerText = 'Good guess, the word has the letter ' + letterEntered;
                     if (wordCompletelyGuessed(wordWithLettersFound)) {
                         endGame();
                         showCongratulationMessage();
