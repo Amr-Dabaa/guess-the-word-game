@@ -56,9 +56,22 @@ const adjusSettingsForNotFoundLetter = function () {
 
 }
 
+const wordCompletelyGuessed = function (wordWithLettersFound) {
+    if (!wordWithLettersFound.includes("●"))
+        return true;
+    else 
+        return false;
+
+}
+
 const endGame = function () {
     guessButton.classList.add('hide');
     playAgainButton.classList.remove('hide');
+}
+
+const showCongratulationMessage = function() {
+    message.innerText = "You guessed correct the word! Congrats!";
+    message.classList.add("win");
 }
 
 const checkIfLetterIsInWord = function (letterEntered) {
@@ -70,8 +83,9 @@ const checkIfLetterIsInWord = function (letterEntered) {
             if (word[i] === letterEntered) {
                 if (wordWithLettersFound[i] == "●") {
                     wordWithLettersFound = replaceCircleWithCharacter(wordWithLettersFound, letterEntered, i);
-                    if (!wordWithLettersFound.includes("●")) {
+                    if (wordCompletelyGuessed(wordWithLettersFound)) {
                         endGame();
+                        showCongratulationMessage();
                         return;
                     }
                     letterFound = true;
