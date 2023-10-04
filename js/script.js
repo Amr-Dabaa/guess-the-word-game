@@ -25,6 +25,8 @@ const getRandomWord = async function () {
     for (let i = 0; i < word.length; i++) {
         wordWithLettersFound = wordWithLettersFound + "●";
     }
+    displayWordInProgress();
+    console.log(word);
 
 }
 
@@ -64,7 +66,7 @@ const adjusSettingsForNotFoundLetter = function () {
 const wordCompletelyGuessed = function (wordWithLettersFound) {
     if (!wordWithLettersFound.includes("●"))
         return true;
-    else 
+    else
         return false;
 
 }
@@ -74,7 +76,21 @@ const endGame = function () {
     playAgainButton.classList.remove('hide');
 }
 
-const showCongratulationMessage = function() {
+const startOver = function () {
+    playAgainButton.classList.add("hide");
+    wordWithLettersFound = "";
+    wordInProgress.innerText = "";
+    numberOfGuessesRemaining = 8;
+    remainingGuesses.innerText = `${numberOfGuessesRemaining} guesses`;
+    message.innerText = "";
+    message.classList.remove("win");
+    guessButton.classList.remove("hide");
+    guessedLettersList.innerHTML = "";
+    getRandomWord();
+    displayWordInProgress();
+}
+
+const showCongratulationMessage = function () {
     message.innerText = "You guessed correct the word! Congrats!";
     message.classList.add("win");
 }
@@ -158,6 +174,10 @@ guessButton.addEventListener("click", function (e) {
 
 
 });
+
+playAgainButton.addEventListener("click", function () {
+    startOver();
+})
 
 getRandomWord();
 displayWordInProgress();
